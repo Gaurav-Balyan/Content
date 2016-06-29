@@ -1,0 +1,51 @@
+You can use
+
+HTML
+
+<body ng-controller="MainCtrl">
+    <button ng-click="selectAll()">Select All</button>
+    <button ng-click="clearAll()">Clear All</button>
+    <input type="checkbox" ng-model="select" ng-click="checkAll()" />
+    <br />
+
+    <p>Checkboxes</p>
+    <input type="checkbox" ng-repeat="c in checkbox" ng-model="checkbox[$index].selected">
+</body>
+Angular
+
+var app = angular.module('plunker', []);
+
+app.controller('MainCtrl', function($scope) {
+  $scope.checkbox = [
+    {
+      selected: false
+    },
+    {
+      selected: false
+    },
+    {
+      selected: false
+    }
+  ];
+  // Check/uncheck all boxes
+  $scope.selectAll = function () {
+    $scope.select = true;
+    angular.forEach($scope.checkbox, function (obj) {
+        obj.selected = true;
+    });
+  };
+
+  $scope.clearAll = function () {
+    $scope.select = false;
+    angular.forEach($scope.checkbox, function (obj) {
+        obj.selected = false;
+    });
+  };
+
+  $scope.checkAll = function () {
+    angular.forEach($scope.checkbox, function (obj) {
+        obj.selected = $scope.select;
+    });
+  };
+});
+Refer http://plnkr.co/edit/PswfSWTQYnCDQvaHKJkB?p=preview
