@@ -1,0 +1,124 @@
+Let us check how we can make select/deselect check box using angular js
+
+
+HTML
+
+
+<input type="checkbox" ng-model="master" ng-change="isSelectAll()">
+<label>Countries</label>
+
+<span ng-repeat="label in labelList">
+ <input type="checkbox" ng-model="label.selected" ng-change="isLabelChecked()">
+ <label>{{ label.name }}</label>
+</span>
+ 
+
+JSON
+
+ $scope.labelList = [
+ {name:'India'},
+ {name:'USA'},
+ {name:'Russia'},
+ {name:'China'},
+ {name:'Australia'},
+ {name:'Japan'}
+ ]
+
+Select all deselect all angular code
+
+
+$scope.model = {
+   selectedLabelList : []
+}
+$scope.isSelectAll = function(){
+ 
+  $scope.model.selectedLabelList = [];
+  
+  if($scope.master){
+    $scope.master = true;
+    for(var i=0;i<$scope.labelList.length;i++){
+     $scope.model.selectedLabelList.push($scope.labelList[i].name);  
+    }
+  }
+  else{
+   $scope.master = false;
+  }
+  
+  angular.forEach($scope.labelList, function (item) {
+    item.selected = $scope.master;
+  });
+}
+
+
+Now you can see that select all/de select all feature is working fine .But if we unselect one of the checkbox then the master check box also need to uncheck and also if we select all check box master should also checked .For making this possible add below code as well.
+
+
+
+$scope.isLabelChecked = function()
+{
+  var _name = this.label.name;
+  if(this.label.selected){
+   $scope.model.selectedLabelList.push(_name);
+   if($scope.model.selectedLabelList.length == $scope.labelList.length )
+    {
+     $scope.master = true;
+    }
+  }else{
+   $scope.master = false;
+   var index = $scope.model.selectedLabelList.indexOf(_name);
+   $scope.model.selectedLabelList.splice(index, 1);
+ }
+}
+  
+
+
+Another Approach
+Comparatively better approach suggested by TIM in the comment section.
+
+HTML
+
+<div>
+  <ul ng-controller="checkboxController">
+    <li>
+      <label>Countries
+        <input type="checkbox" ng-model="selectedAll" ng-click="selectAll()" />
+      </label>
+    </li>
+    <li ng-repeat="item in Items">
+      <label>
+        <input type="checkbox" ng-model="item.Selected" ng-click="checkIfAllSelected()" /> 
+  {{item.name}}
+      </label>
+    </li>
+  </ul>
+</div>
+
+
+JS
+
+
+  $scope.Items = [{
+      name: 'India'
+    }, {
+      name: 'USA'
+    }, {
+      name: 'Russia'
+    }, {
+      name: 'China'
+    }, {
+      name: 'Australia'
+    }, {
+      name: 'Japan'
+    }];
+
+    $scope.selectAll = function() {
+      angular.forEach($scope.Items, function(item) {
+        item.Selected = $scope.selectedAll;
+      });
+    };
+
+    $scope.checkIfAllSelected = function() {
+      $scope.selectedAll = $scope.Items.every(function(item) {
+        return item.Selected == true
+      })
+    };
